@@ -36,8 +36,8 @@ Você deve configurar as seguintes variáveis na sua IDE:
 
 | Variável | Descrição | Exemplo de Valor |
 | :--- | :--- | :--- |
-| `DB_URL` | URL de conexão JDBC do Oracle | `jdbc:oracle:thin:@//oracle.fiap.com.br:1521/ORCL` |
-| `DB_USER` | Seu usuário do banco de dados | `RM569492` |
+| `DB_URL` | URL de conexão JDBC do Oracle | `jdbc:oracle:thin:@//HOST:PORT/SID` |
+| `DB_USER` | Seu usuário do banco de dados | `RM123456` |
 | `DB_PASSWORD` | Sua senha do banco de dados | `sua_senha_secreta` |
 
 **Como configurar no IntelliJ IDEA:**
