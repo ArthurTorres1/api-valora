@@ -24,6 +24,9 @@ public class UsuarioModel {
     @Column(name = "NM_USUARIO", nullable = false, length = 100)
     private String nome;
 
+    @Column(name = "NR_TELEFONE", nullable = false, length = 20)
+    private String telefone;
+
     @Column(name = "DS_EMAIL", nullable = false, length = 100, unique = true)
     private String email;
 
@@ -47,6 +50,7 @@ public class UsuarioModel {
 
     public UsuarioModel(CadastroUsuarioDTO cadastroUsuarioDTO) {
         this.nome = cadastroUsuarioDTO.nome();
+        this.telefone = cadastroUsuarioDTO.telefone();
         this.email = cadastroUsuarioDTO.email();
         this.senha = cadastroUsuarioDTO.senha();
         this.cpf = cadastroUsuarioDTO.cpf();
