@@ -3,6 +3,7 @@ package com.valora.api.controller;
 import com.valora.api.dto.CadastroUsuarioDTO;
 import com.valora.api.model.Usuario.UsuarioModel;
 import com.valora.api.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,8 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    public void cadastro(@RequestBody CadastroUsuarioDTO cadastroUsuarioDTO) {
+    public void cadastro(@RequestBody @Valid CadastroUsuarioDTO cadastroUsuarioDTO) {
+
         usuarioRepository.save(new UsuarioModel(cadastroUsuarioDTO));
     }
 }
