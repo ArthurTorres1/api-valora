@@ -1,4 +1,4 @@
-package com.valora.api.DTOs;
+package com.valora.api.dto;
 
 import java.time.LocalDate;
 
@@ -7,7 +7,6 @@ public record CadastroUsuarioDTO(
         String email,
         String senha,
         String cpf,
-        LocalDate DataNascimento,
+        LocalDate dataNascimento,
         DadosEndereco endereco
-) {
-}
+) {}

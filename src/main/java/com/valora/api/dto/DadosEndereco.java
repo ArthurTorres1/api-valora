@@ -1,4 +1,4 @@
-package com.valora.api.DTOs;
+package com.valora.api.dto;
 
 public record DadosEndereco(
         String logradouro,
@@ -7,5 +7,5 @@ public record DadosEndereco(
         String cidade,
         String uf,
         String numero,
-        String complemento) {
-}
+        String complemento
+) {}
