@@ -1,4 +1,4 @@
-package com.valora.api.DTOs;
+package com.valora.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -21,5 +21,5 @@ public record DadosEndereco(
         String uf,
 
         String numero,
-        String complemento) {
-}
+        String complemento
+) {}

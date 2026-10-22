@@ -1,4 +1,4 @@
-package com.valora.api.DTOs;
+package com.valora.api.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -29,7 +29,7 @@ public record CadastroUsuarioDTO(
         String cpf,
 
         @Past(message = "A dat de nascimento deve ser uma data passada.")
-        LocalDate DataNascimento,
+        LocalDate dataNascimento,
 
         @NotNull
         @Valid

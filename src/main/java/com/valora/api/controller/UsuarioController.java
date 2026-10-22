@@ -1,7 +1,7 @@
 package com.valora.api.controller;
 
-import com.valora.api.DTOs.CadastroUsuarioDTO;
-import com.valora.api.models.Usuario.UsuarioModel;
+import com.valora.api.dto.CadastroUsuarioDTO;
+import com.valora.api.model.Usuario.UsuarioModel;
 import com.valora.api.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
