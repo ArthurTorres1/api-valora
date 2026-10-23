@@ -1,5 +1,6 @@
 package com.valora.api.controller;
 
+import com.valora.api.dto.AtualizaUsuarioDTO;
 import com.valora.api.dto.CadastroUsuarioDTO;
 import com.valora.api.dto.DadosListagemUsuarioDTO;
 import com.valora.api.model.Usuario.UsuarioModel;
@@ -26,10 +27,24 @@ public class UsuarioController {
         usuarioRepository.save(new UsuarioModel(cadastroUsuarioDTO));
     }
 
-    @GetMapping("/lista-usuarios")
-    public Page<DadosListagemUsuarioDTO> listaUsuarios(@PageableDefault(size = 12, page = 0, sort = {"nome"}) Pageable page) {
+    @GetMapping("/listar-usuarios")
+    public Page<DadosListagemUsuarioDTO> listarUsuarios(@PageableDefault(size = 12, page = 0, sort = {"nome"}) Pageable page) {
         return usuarioRepository
-                .findAll(page)
+                .findAllByAtivoTrue(page)
                 .map(DadosListagemUsuarioDTO::new);
+    }
+
+    @PutMapping("/atualizar")
+    @Transactional
+    public void atualizarUsuario(@RequestBody @Valid AtualizaUsuarioDTO novoUsuarioDTO) {
+        var usuario = usuarioRepository.getReferenceById(novoUsuarioDTO.id());
+        usuario.atualizarInformacoes(novoUsuarioDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id) {
+        var usuario = usuarioRepository.getReferenceById(id);
+        usuario.desativar();
     }
 }

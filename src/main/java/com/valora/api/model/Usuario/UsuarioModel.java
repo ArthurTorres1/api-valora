@@ -1,5 +1,6 @@
 package com.valora.api.model.Usuario;
 
+import com.valora.api.dto.AtualizaUsuarioDTO;
 import com.valora.api.dto.CadastroUsuarioDTO;
 import com.valora.api.model.Endereco.Endereco;
 import jakarta.persistence.*;
@@ -48,7 +49,11 @@ public class UsuarioModel {
     @Column(name = "DT_CRIACAO", insertable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
+    @Column(name = "ST_ATIVO", nullable = false, insertable = false, length = 1)
+    private Boolean ativo;
+
     public UsuarioModel(CadastroUsuarioDTO cadastroUsuarioDTO) {
+        this.ativo = true;
         this.nome = cadastroUsuarioDTO.nome();
         this.telefone = cadastroUsuarioDTO.telefone();
         this.email = cadastroUsuarioDTO.email();
@@ -56,5 +61,18 @@ public class UsuarioModel {
         this.cpf = cadastroUsuarioDTO.cpf();
         this.dataNascimento = LocalDate.now();
         this.endereco = new Endereco(cadastroUsuarioDTO.endereco());
+    }
+
+    public void atualizarInformacoes(AtualizaUsuarioDTO novoUsuarioDTO) {
+        if(novoUsuarioDTO.nome() != null)
+            this.nome = novoUsuarioDTO.nome();
+        if(novoUsuarioDTO.telefone() != null)
+            this.telefone = novoUsuarioDTO.telefone();
+        if(novoUsuarioDTO.endereco() != null)
+            this.endereco.atualizarInformacoes(novoUsuarioDTO.endereco());
+    }
+
+    public void desativar() {
+        this.ativo = false;
     }
 }
