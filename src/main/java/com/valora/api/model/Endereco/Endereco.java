@@ -43,4 +43,22 @@ public class Endereco {
         this.complemento = dadosEndereco.complemento();
         this.numero = dadosEndereco.numero();
     }
+
+    public void atualizarInformacoes(DadosEndereco novoEndereco) {
+        if(novoEndereco.logradouro() != null)
+            this.logradouro = novoEndereco.logradouro();
+        if(novoEndereco.bairro() != null)
+            this.bairro = novoEndereco.bairro();
+        if(novoEndereco.cep() != null)
+            this.cep = novoEndereco.cep();
+        if(novoEndereco.cidade() != null)
+            this.cidade = novoEndereco.cidade();
+        if(novoEndereco.uf() != null)
+            this.uf = novoEndereco.uf();
+        if(novoEndereco.complemento() != null)
+            this.complemento = novoEndereco.complemento();
+        if(novoEndereco.numero() != null)
+            this.numero = novoEndereco.numero();
+
+    }
 }
