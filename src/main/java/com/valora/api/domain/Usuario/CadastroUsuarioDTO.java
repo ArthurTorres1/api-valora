@@ -1,5 +1,6 @@
-package com.valora.api.dto;
+package com.valora.api.domain.Usuario;
 
+import com.valora.api.domain.Endereco.DadosEndereco;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -28,7 +29,7 @@ public record CadastroUsuarioDTO(
         @CPF(message = "O CPF informado é inválido.")
         String cpf,
 
-        @Past(message = "A dat de nascimento deve ser uma data passada.")
+        @Past(message = "A data de nascimento deve ser uma data passada.")
         LocalDate dataNascimento,
 
         @NotNull

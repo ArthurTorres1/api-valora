@@ -1,6 +1,6 @@
-package com.valora.api.model.Caixinha;
+package com.valora.api.domain.Caixinha;
 
-import com.valora.api.model.Usuario.UsuarioModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;

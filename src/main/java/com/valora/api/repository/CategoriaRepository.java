@@ -1,6 +1,6 @@
 package com.valora.api.repository;
 
-import com.valora.api.model.Categoria.CategoriaModel;
+import com.valora.api.domain.Categoria.CategoriaModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

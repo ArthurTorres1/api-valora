@@ -1,4 +1,4 @@
-package com.valora.api.dto;
+package com.valora.api.domain.Endereco;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,7 +1,6 @@
-package com.valora.api.dto;
+package com.valora.api.domain.Usuario;
 
-import com.valora.api.model.Endereco.Endereco;
-import com.valora.api.model.Usuario.UsuarioModel;
+import com.valora.api.domain.Endereco.Endereco;
 
 public record UsuarioDetalhadoDTO(Long id, String nome, String email, String telefone, Endereco endereco) {
     public UsuarioDetalhadoDTO(UsuarioModel usuarioModel){

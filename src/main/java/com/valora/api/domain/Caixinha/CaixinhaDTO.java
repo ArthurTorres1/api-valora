@@ -1,4 +1,4 @@
-package com.valora.api.dto;
+package com.valora.api.domain.Caixinha;
 
 import java.math.BigDecimal;
 
