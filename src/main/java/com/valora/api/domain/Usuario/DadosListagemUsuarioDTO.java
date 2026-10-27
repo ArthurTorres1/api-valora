@@ -1,6 +1,4 @@
-package com.valora.api.dto;
-
-import com.valora.api.model.Usuario.UsuarioModel;
+package com.valora.api.domain.Usuario;
 
 public record DadosListagemUsuarioDTO(Long id,String nome, String email, String telefone) {
 

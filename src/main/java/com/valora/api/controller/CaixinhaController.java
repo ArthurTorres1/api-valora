@@ -1,7 +1,7 @@
 package com.valora.api.controller;
 
-import com.valora.api.dto.CaixinhaDTO;
-import com.valora.api.model.Caixinha.CaixinhaModel;
+import com.valora.api.domain.Caixinha.CaixinhaDTO;
+import com.valora.api.domain.Caixinha.CaixinhaModel;
 import com.valora.api.service.CaixinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.valora.api.model.Categoria;
+package com.valora.api.domain.Categoria;
 
-import com.valora.api.model.Usuario.UsuarioModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 

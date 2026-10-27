@@ -1,7 +1,7 @@
 package com.valora.api.controller;
 
-import com.valora.api.dto.CategoriaDTO;
-import com.valora.api.model.Categoria.CategoriaModel;
+import com.valora.api.domain.Categoria.CategoriaDTO;
+import com.valora.api.domain.Categoria.CategoriaModel;
 import com.valora.api.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

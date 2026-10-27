@@ -1,8 +1,6 @@
-package com.valora.api.model.Usuario;
+package com.valora.api.domain.Usuario;
 
-import com.valora.api.dto.AtualizaUsuarioDTO;
-import com.valora.api.dto.CadastroUsuarioDTO;
-import com.valora.api.model.Endereco.Endereco;
+import com.valora.api.domain.Endereco.Endereco;
 import jakarta.persistence.*;
 import lombok.*;
 

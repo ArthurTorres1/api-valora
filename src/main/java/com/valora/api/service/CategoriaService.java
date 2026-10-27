@@ -1,8 +1,8 @@
 package com.valora.api.service;
 
-import com.valora.api.dto.CategoriaDTO;
-import com.valora.api.model.Categoria.CategoriaModel;
-import com.valora.api.model.Usuario.UsuarioModel;
+import com.valora.api.domain.Categoria.CategoriaDTO;
+import com.valora.api.domain.Categoria.CategoriaModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.CategoriaRepository;
 import com.valora.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

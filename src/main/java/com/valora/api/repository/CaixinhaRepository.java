@@ -1,6 +1,6 @@
 package com.valora.api.repository;
 
-import com.valora.api.model.Caixinha.CaixinhaModel;
+import com.valora.api.domain.Caixinha.CaixinhaModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

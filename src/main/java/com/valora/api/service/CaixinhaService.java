@@ -1,8 +1,8 @@
 package com.valora.api.service;
 
-import com.valora.api.dto.CaixinhaDTO;
-import com.valora.api.model.Caixinha.CaixinhaModel;
-import com.valora.api.model.Usuario.UsuarioModel;
+import com.valora.api.domain.Caixinha.CaixinhaDTO;
+import com.valora.api.domain.Caixinha.CaixinhaModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.CaixinhaRepository;
 import com.valora.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
