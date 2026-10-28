@@ -1,6 +1,9 @@
 package com.valora.api.controller;
 
 import com.valora.api.domain.DadosAuthDTO;
+import com.valora.api.domain.Usuario.UsuarioModel;
+import com.valora.api.infra.security.DadosTokenJWT;
+import com.valora.api.infra.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +20,17 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping
     public ResponseEntity efetuarLogin(@RequestBody DadosAuthDTO auth){
-        var token = new UsernamePasswordAuthenticationToken(auth.email(), auth.senha());
-        var authentication = authenticationManager.authenticate(token);
+        var authenticationToken = new UsernamePasswordAuthenticationToken(auth.email(), auth.senha());
+        var authentication = authenticationManager.authenticate(authenticationToken);
 
-        return ResponseEntity.ok().build();
+        var tokenJWT = tokenService.generateToken((UsuarioModel) authentication.getPrincipal());
+
+        return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
 
     }
 }
