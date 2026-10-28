@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,10 +24,14 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping
     @Transactional
     public ResponseEntity cadastro(@RequestBody @Valid CadastroUsuarioDTO cadastroUsuarioDTO, UriComponentsBuilder uriBuilder) {
         var newUsuario = usuarioRepository.save(new UsuarioModel(cadastroUsuarioDTO));
+        newUsuario.setSenha(passwordEncoder.encode(cadastroUsuarioDTO.senha()));
         var uri = uriBuilder.path("/api/usuario/{id}").buildAndExpand(newUsuario.getId()).toUri();
 
         return ResponseEntity.created(uri).body(new UsuarioDetalhadoDTO(newUsuario));
