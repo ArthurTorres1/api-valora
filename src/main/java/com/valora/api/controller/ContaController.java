@@ -5,6 +5,7 @@ import com.valora.api.domain.Conta.CadastroContaDTO;
 import com.valora.api.domain.Conta.DadosListagemContaDTO;
 import com.valora.api.domain.Conta.ContaDetalhadaDTO;
 import com.valora.api.domain.Conta.ContaModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.ContaRepository;
 import com.valora.api.repository.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,14 +26,13 @@ public class ContaController {
     @Autowired
     private ContaRepository contaRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
     @PostMapping
     @Transactional
-    public ResponseEntity cadastro(@RequestBody @Valid CadastroContaDTO cadastroContaDTO, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity cadastro(
+            @RequestBody @Valid CadastroContaDTO cadastroContaDTO,
+            @AuthenticationPrincipal UsuarioModel usuario,
+            UriComponentsBuilder uriBuilder) {
 
-        var usuario = usuarioRepository.getReferenceById(cadastroContaDTO.idUsuario());
         var novaConta = contaRepository.save(new ContaModel(cadastroContaDTO, usuario));
         var uri = uriBuilder.path("/api/conta/{id}").buildAndExpand(novaConta.getId()).toUri();
 
@@ -39,9 +40,12 @@ public class ContaController {
     }
 
     @GetMapping("/listar-contas")
-    public ResponseEntity<Page<DadosListagemContaDTO>> listarContas(@PageableDefault(size = 12, page = 0, sort = {"nome"}) Pageable page) {
+    public ResponseEntity<Page<DadosListagemContaDTO>> listarContas(
+            @PageableDefault(size = 12, page = 0, sort = {"nome"}) Pageable page,
+            @AuthenticationPrincipal UsuarioModel usuario) {
+
         var listagemContas = contaRepository
-                .findAllByAtivoTrue(page)
+                .findAllByAtivoTrueAndUsuario(page, usuario)
                 .map(DadosListagemContaDTO::new);
 
         return ResponseEntity.ok(listagemContas);

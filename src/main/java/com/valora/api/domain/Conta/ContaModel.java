@@ -4,6 +4,8 @@ import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -61,6 +63,9 @@ public class ContaModel {
     }
 
     public void debitar(BigDecimal valor) {
+        if(this.saldo.compareTo(valor) < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente");
+        }
         this.saldo = this.saldo.subtract(valor);
     }
 }

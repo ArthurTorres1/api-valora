@@ -20,8 +20,8 @@ public class CategoriaService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public CategoriaModel salvar(CategoriaDTO dto) {
-        UsuarioModel usuario = usuarioRepository.findById(dto.idUsuario())
+    public CategoriaModel salvar(CategoriaDTO dto, UsuarioModel usuarioAutenticado) {
+        UsuarioModel usuario = usuarioRepository.findById(usuarioAutenticado.getId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID informado!"));
 
         CategoriaModel categoria = new CategoriaModel();
