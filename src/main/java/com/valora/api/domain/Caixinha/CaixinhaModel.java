@@ -2,6 +2,9 @@ package com.valora.api.domain.Caixinha;
 
 import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,7 +15,7 @@ public class CaixinhaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_CAIXINHA")
-    private Long idCaixinha;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "ID_USUARIO", nullable = false)
@@ -33,7 +36,7 @@ public class CaixinhaModel {
     public CaixinhaModel() {}
 
     public CaixinhaModel(Long idCaixinha, UsuarioModel usuario, String nmCaixinha, BigDecimal vlMeta, BigDecimal vlAtual, LocalDate dtCriacao) {
-        this.idCaixinha = idCaixinha;
+        this.id = idCaixinha;
         this.usuario = usuario;
         this.nmCaixinha = nmCaixinha;
         this.vlMeta = vlMeta;
@@ -41,8 +44,8 @@ public class CaixinhaModel {
         this.dtCriacao = dtCriacao;
     }
 
-    public Long getIdCaixinha() { return idCaixinha; }
-    public void setIdCaixinha(Long idCaixinha) { this.idCaixinha = idCaixinha; }
+    public Long getIdCaixinha() { return id; }
+    public void setIdCaixinha(Long idCaixinha) { this.id = idCaixinha; }
 
     public UsuarioModel getUsuario() { return usuario; }
     public void setUsuario(UsuarioModel usuario) { this.usuario = usuario; }
@@ -58,4 +61,16 @@ public class CaixinhaModel {
 
     public LocalDate getDtCriacao() { return dtCriacao; }
     public void setDtCriacao(LocalDate dtCriacao) { this.dtCriacao = dtCriacao; }
+
+    public void creditar(BigDecimal valor) {
+        this.vlAtual = this.vlAtual.add(valor);
+    }
+
+    public void debitar(BigDecimal valor) {
+        if (this.vlAtual.compareTo(valor) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente na caixinha");
+        }
+
+        this.vlAtual = this.vlAtual.subtract(valor);
+    }
 }

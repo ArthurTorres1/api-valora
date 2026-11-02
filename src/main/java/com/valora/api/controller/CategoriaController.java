@@ -2,9 +2,11 @@ package com.valora.api.controller;
 
 import com.valora.api.domain.Categoria.CategoriaDTO;
 import com.valora.api.domain.Categoria.CategoriaModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +20,8 @@ public class CategoriaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoriaModel salvar(@RequestBody CategoriaDTO dto) {
-        return service.salvar(dto);
+    public CategoriaModel salvar(@RequestBody CategoriaDTO dto, @AuthenticationPrincipal UsuarioModel usuario) {
+        return service.salvar(dto, usuario);
     }
 
     @GetMapping
