@@ -1,6 +1,7 @@
 package com.valora.api.service;
 
 import com.valora.api.domain.Caixinha.CaixinhaModel;
+import com.valora.api.domain.Categoria.CategoriaModel;
 import com.valora.api.domain.Conta.ContaModel;
 import com.valora.api.domain.Movimentacao.MovimentacaoModel;
 import com.valora.api.domain.Movimentacao.TipoMovimentacao;
@@ -141,9 +142,13 @@ public class MovimentacaoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Caixinha inexistente"))
                 : movimentacao.getCaixinha();
 
-        // 3. ATUALIZAR OS DADOS NA MODEL
-        movimentacao.atualizarInformacoes(dto, contaOrigem, contaDestino, caixinha);
+        CategoriaModel categoria = dto.idCategoria() != null
+                ? categoriaRepository.findById(dto.idCategoria())
+                .orElseThrow(() -> new ValidacaoException("Categoria inválida"))
+                : movimentacao.getCategoria();
 
+        // 3. ATUALIZAR OS DADOS NA MODEL
+        movimentacao.atualizarInformacoes(dto, contaOrigem, contaDestino, caixinha, categoria);
         // 4. APLICAR O NOVO SALDO
         // Executa a regra financeira com os dados já atualizados
         aplicarSaldos(movimentacao);
