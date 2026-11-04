@@ -2,8 +2,14 @@ package com.valora.api.controller;
 
 import com.valora.api.domain.Conta.ContaModel;
 import com.valora.api.domain.Movimentacao.*;
+import com.valora.api.domain.Movimentacao.dto.AtualizaMovimentacaoDTO;
+import com.valora.api.domain.Movimentacao.dto.CadastroMovimentacaoDTO;
+import com.valora.api.domain.Movimentacao.dto.DadosListagemMovimentacaoDTO;
+import com.valora.api.domain.Movimentacao.dto.MovimentacaoDetalhadaDTO;
 import com.valora.api.domain.Usuario.UsuarioModel;
+import com.valora.api.infra.exception.RecursoNaoEncontradoException;
 import com.valora.api.repository.*;
+import com.valora.api.service.MovimentacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,16 +28,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class MovimentacaoController {
 
     @Autowired
-    private MovimentacaoRepository movimentacaoRepository;
+    private MovimentacaoService movimentacaoService;
 
-    @Autowired
-    private ContaRepository contaRepository;
-
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private CaixinhaRepository caixinhaRepository;
 
     @PostMapping
     @Transactional
@@ -40,65 +38,7 @@ public class MovimentacaoController {
             @AuthenticationPrincipal UsuarioModel usuarioLogado,
             UriComponentsBuilder uriBuilder) {
 
-        if (dto.idConta() == null && dto.idCaixinha() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "A movimentação precisa estar vinculada a uma Conta ou a uma Caixinha.");
-        }
-
-        var categoria = categoriaRepository.findById(dto.idCategoria())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria inválida"));
-
-        var conta = dto.idConta() != null
-                ? contaRepository.findByIdAndUsuario(dto.idConta(), usuarioLogado)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta não encontrada"))
-                : null;
-
-        var contaDestino = dto.idContaDestino() != null
-                ? contaRepository.findByIdAndUsuario(dto.idContaDestino(), usuarioLogado)
-                  .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta destino não encontrada"))
-                : null;
-
-        var caixinha = dto.idCaixinha() != null
-                ? caixinhaRepository.findByIdAndUsuario(dto.idCaixinha(), usuarioLogado)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Caixinha não encontrada"))
-                : null;
-
-        switch (dto.tipo()) {
-            case DESPESA -> {
-                if (conta != null) conta.debitar(dto.valor());
-                else caixinha.debitar(dto.valor());
-            }
-            case RECEITA -> {
-                if (conta != null) conta.creditar(dto.valor());
-                else caixinha.creditar(dto.valor());
-            }
-            case CAIXINHA_GUARDAR -> {
-                if (conta == null || caixinha == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "Para guardar dinheiro, informe a conta de origem e a caixinha de destino.");
-                }
-                conta.debitar(dto.valor());
-                caixinha.creditar(dto.valor());
-            }
-            case CAIXINHA_RESGATE -> {
-                if (conta == null || caixinha == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "Para resgatar dinheiro, informe a caixinha de origem e a conta de destino.");
-                }
-                caixinha.debitar(dto.valor());
-                conta.creditar(dto.valor());
-            }
-            case TRANSFERENCIA_ENTRE_CONTAS -> {
-                if (conta == null || contaDestino == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST ,"Transferência entre contas exige uma conta de origem e uma de destino.");
-                }
-                conta.debitar(dto.valor());
-                contaDestino.creditar(dto.valor());
-            }
-        }
-
-        var novaMovimentacao = new MovimentacaoModel(dto, usuarioLogado, conta, categoria, caixinha);
-        movimentacaoRepository.save(novaMovimentacao);
+        var novaMovimentacao = movimentacaoService.salvarMovimentacao(dto, usuarioLogado);
 
         var uri = uriBuilder.path("/api/movimentacao/{id}").buildAndExpand(novaMovimentacao.getId()).toUri();
         return ResponseEntity.created(uri).body(new MovimentacaoDetalhadaDTO(novaMovimentacao));
@@ -112,10 +52,7 @@ public class MovimentacaoController {
             @PageableDefault(size = 12, page = 0, sort = {"dataMovimentacao"}) Pageable page,
             @AuthenticationPrincipal UsuarioModel usuarioLogado) {
 
-        var listagem = movimentacaoRepository
-                .buscarComFiltrosOpcionais(usuarioLogado, contaId, categoriaId, tpMovimentacao, page)
-                .map(DadosListagemMovimentacaoDTO::new);
-
+        var listagem = movimentacaoService.getMovimentacoes(usuarioLogado, contaId, categoriaId, tpMovimentacao, page);
         return ResponseEntity.ok(listagem);
     }
 
@@ -125,9 +62,7 @@ public class MovimentacaoController {
             @PathVariable Long id,
             @AuthenticationPrincipal UsuarioModel usuarioLogado) {
 
-        var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movimentação não encontrada"));
-
+        var movimentacao = movimentacaoService.detalharMovimentacao(id, usuarioLogado);
         return ResponseEntity.ok(new MovimentacaoDetalhadaDTO(movimentacao));
     }
 
@@ -138,17 +73,7 @@ public class MovimentacaoController {
             @RequestBody @Valid AtualizaMovimentacaoDTO dto,
             @AuthenticationPrincipal UsuarioModel usuarioLogado) {
 
-        var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movimentação não encontrada"));
-
-        ContaModel contaNew = null;
-        if(dto.idConta() != null) {
-           contaNew = contaRepository.findByIdAndUsuario(dto.idConta(), usuarioLogado)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Conta inexistente"));
-        }
-
-
-        movimentacao.atualizarInformacoes(dto, contaNew);
+        var movimentacao = movimentacaoService.atualizarMovimentacao(id, dto, usuarioLogado);
 
         return ResponseEntity.ok(new MovimentacaoDetalhadaDTO(movimentacao));
     }
@@ -159,10 +84,7 @@ public class MovimentacaoController {
             @PathVariable Long id,
             @AuthenticationPrincipal UsuarioModel usuarioLogado) {
 
-        var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Movimentação não encontrada"));
-
-        movimentacao.desativar();
+        movimentacaoService.desativarMovimentacao(id, usuarioLogado);
         return ResponseEntity.noContent().build();
     }
 }

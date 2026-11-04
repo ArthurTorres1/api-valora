@@ -1,6 +1,6 @@
 package com.valora.api.service;
 
-import com.valora.api.domain.Categoria.CategoriaDTO;
+import com.valora.api.domain.Categoria.dto.CategoriaDTO;
 import com.valora.api.domain.Categoria.CategoriaModel;
 import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.CategoriaRepository;

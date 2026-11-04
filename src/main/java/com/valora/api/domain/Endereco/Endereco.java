@@ -1,5 +1,6 @@
 package com.valora.api.domain.Endereco;
 
+import com.valora.api.domain.Endereco.dto.DadosEndereco;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

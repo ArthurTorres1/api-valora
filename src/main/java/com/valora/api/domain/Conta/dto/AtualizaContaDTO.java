@@ -1,4 +1,4 @@
-package com.valora.api.domain.Conta;
+package com.valora.api.domain.Conta.dto;
 
 import jakarta.validation.constraints.NotNull;
 

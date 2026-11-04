@@ -1,6 +1,6 @@
-package com.valora.api.domain.Movimentacao;
+package com.valora.api.domain.Movimentacao.dto;
 
-import com.valora.api.domain.Conta.ContaModel;
+import com.valora.api.domain.Movimentacao.TipoMovimentacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

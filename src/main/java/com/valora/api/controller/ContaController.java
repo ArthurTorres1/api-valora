@@ -1,13 +1,12 @@
 package com.valora.api.controller;
 
-import com.valora.api.domain.Conta.AtualizaContaDTO;
-import com.valora.api.domain.Conta.CadastroContaDTO;
-import com.valora.api.domain.Conta.DadosListagemContaDTO;
-import com.valora.api.domain.Conta.ContaDetalhadaDTO;
+import com.valora.api.domain.Conta.dto.AtualizaContaDTO;
+import com.valora.api.domain.Conta.dto.CadastroContaDTO;
+import com.valora.api.domain.Conta.dto.DadosListagemContaDTO;
+import com.valora.api.domain.Conta.dto.ContaDetalhadaDTO;
 import com.valora.api.domain.Conta.ContaModel;
 import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.ContaRepository;
-import com.valora.api.repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

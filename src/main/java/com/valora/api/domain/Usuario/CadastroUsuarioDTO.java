@@ -1,6 +1,6 @@
 package com.valora.api.domain.Usuario;
 
-import com.valora.api.domain.Endereco.DadosEndereco;
+import com.valora.api.domain.Endereco.dto.DadosEndereco;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
