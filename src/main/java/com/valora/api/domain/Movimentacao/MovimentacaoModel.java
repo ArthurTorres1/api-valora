@@ -97,7 +97,7 @@ public class MovimentacaoModel {
         this.ativo = false;
     }
 
-    public void atualizarInformacoes(AtualizaMovimentacaoDTO dto, ContaModel contaNew) {
+    public void atualizarInformacoes(AtualizaMovimentacaoDTO dto, ContaModel contaOrigemNew, ContaModel contaDestinoNew, CaixinhaModel caixinhaNew) {
         if (dto.descricao() != null) {
             this.descricao = dto.descricao();
         }
@@ -110,9 +110,15 @@ public class MovimentacaoModel {
         if (dto.tipo() != null) {
             this.tipo = dto.tipo();
         }
-        if (dto.idConta() != null) {
-            this.contaOrigem = contaNew;
-        }
 
+        // Atualiza as entidades relacionadas
+        this.contaOrigem = contaOrigemNew;
+        this.contaDestino = contaDestinoNew;
+        this.caixinha = caixinhaNew;
+
+        if (this.tipo == TipoMovimentacao.DESPESA || this.tipo == TipoMovimentacao.RECEITA) {
+            this.contaDestino = null;
+            if (this.contaOrigem != null) this.caixinha = null; // Se usou conta, limpa caixinha
+        }
     }
 }

@@ -11,6 +11,8 @@ public record AtualizaMovimentacaoDTO(
         TipoMovimentacao tipo,
         LocalDate dataMovimentacao,
         Long idConta,
+        Long idContaDestino,
+        Long idCaixinha,
         Long idCategoria
 ) {
 }
