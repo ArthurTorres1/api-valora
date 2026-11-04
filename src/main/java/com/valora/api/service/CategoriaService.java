@@ -3,10 +3,12 @@ package com.valora.api.service;
 import com.valora.api.domain.Categoria.dto.CategoriaDTO;
 import com.valora.api.domain.Categoria.CategoriaModel;
 import com.valora.api.domain.Usuario.UsuarioModel;
+import com.valora.api.infra.exception.RecursoNaoEncontradoException;
 import com.valora.api.repository.CategoriaRepository;
 import com.valora.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -51,8 +53,11 @@ public class CategoriaService {
         return categoriaRepository.save(categoriaExistente);
     }
 
-    public void excluir(Long id) {
-        CategoriaModel categoria = buscarPorId(id);
-        categoriaRepository.delete(categoria);
+    @Transactional
+    public void excluirCategoria(Long id) {
+        var categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
+
+        categoria.desativar();
     }
 }

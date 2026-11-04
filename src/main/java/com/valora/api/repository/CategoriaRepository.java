@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CategoriaRepository extends JpaRepository<CategoriaModel, Long> {
     List<CategoriaModel> findByUsuarioId(Long usuarioId);
+    List<CategoriaModel> findAllByAtivoTrue();
 }

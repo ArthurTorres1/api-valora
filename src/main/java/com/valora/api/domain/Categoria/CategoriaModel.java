@@ -23,6 +23,13 @@ public class CategoriaModel {
     @Column(name = "DT_CRIACAO", nullable = false)
     private LocalDate dtCriacao = LocalDate.now();
 
+    @Column(name = "FL_ATIVO")
+    private Boolean ativo = true;
+
+    public void desativar() {
+        this.ativo = false;
+    }
+
     public CategoriaModel() {}
 
     public CategoriaModel(Long idCategoria, UsuarioModel usuario, String nmCategoria, LocalDate dtCriacao) {

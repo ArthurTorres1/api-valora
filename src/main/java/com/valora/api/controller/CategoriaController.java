@@ -51,6 +51,6 @@ public class CategoriaController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void excluir(@PathVariable Long id) {
-        service.excluir(id);
+        service.excluirCategoria(id);
     }
 }
