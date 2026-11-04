@@ -1,6 +1,6 @@
 package com.valora.api.service;
 
-import com.valora.api.domain.Caixinha.CaixinhaDTO;
+import com.valora.api.domain.Caixinha.dto.CaixinhaDTO;
 import com.valora.api.domain.Caixinha.CaixinhaModel;
 import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.repository.CaixinhaRepository;

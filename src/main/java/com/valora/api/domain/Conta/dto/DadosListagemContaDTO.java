@@ -1,4 +1,6 @@
-package com.valora.api.domain.Conta;
+package com.valora.api.domain.Conta.dto;
+
+import com.valora.api.domain.Conta.ContaModel;
 
 import java.math.BigDecimal;
 

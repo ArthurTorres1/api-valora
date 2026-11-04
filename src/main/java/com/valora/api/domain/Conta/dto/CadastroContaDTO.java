@@ -1,7 +1,7 @@
-package com.valora.api.domain.Conta;
+package com.valora.api.domain.Conta.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
 
 public record CadastroContaDTO(

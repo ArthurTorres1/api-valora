@@ -1,5 +1,7 @@
 package com.valora.api.domain.Conta;
 
+import com.valora.api.domain.Conta.dto.AtualizaContaDTO;
+import com.valora.api.domain.Conta.dto.CadastroContaDTO;
 import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;

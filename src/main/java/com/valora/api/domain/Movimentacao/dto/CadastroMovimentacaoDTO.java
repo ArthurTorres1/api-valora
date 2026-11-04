@@ -1,5 +1,6 @@
-package com.valora.api.domain.Movimentacao;
+package com.valora.api.domain.Movimentacao.dto;
 
+import com.valora.api.domain.Movimentacao.TipoMovimentacao;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
