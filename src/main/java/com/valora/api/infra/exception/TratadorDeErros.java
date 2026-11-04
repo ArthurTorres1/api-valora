@@ -53,7 +53,19 @@ public class TratadorDeErros {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " +ex.getLocalizedMessage());
     }
 
-    private record MensagemErro(String mensagem) implements Serializable {}
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<MensagemErro> tratarErroDeValidacao(ValidacaoException ex) {
+        var erroFormatado = new MensagemErro(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erroFormatado);
+    }
+
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<MensagemErro> tratarErroDeRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
+        var erroFormatado = new MensagemErro(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erroFormatado);
+    }
+
+    public record MensagemErro(String mensagem) implements Serializable {}
 
     private record DadosErroValidacao(String campo, String mensagem){
         public DadosErroValidacao(FieldError erro){

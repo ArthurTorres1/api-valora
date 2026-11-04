@@ -3,14 +3,14 @@ package com.valora.api.domain.Movimentacao;
 import com.valora.api.domain.Caixinha.CaixinhaModel;
 import com.valora.api.domain.Categoria.CategoriaModel;
 import com.valora.api.domain.Conta.ContaModel;
+import com.valora.api.domain.Movimentacao.dto.AtualizaMovimentacaoDTO;
+import com.valora.api.domain.Movimentacao.dto.CadastroMovimentacaoDTO;
 import com.valora.api.domain.Usuario.UsuarioModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -113,5 +113,6 @@ public class MovimentacaoModel {
         if (dto.idConta() != null) {
             this.contaOrigem = contaNew;
         }
+
     }
 }
