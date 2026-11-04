@@ -1,5 +1,6 @@
 package com.valora.api.service;
 
+import com.valora.api.domain.Caixinha.CaixinhaModel;
 import com.valora.api.domain.Conta.ContaModel;
 import com.valora.api.domain.Movimentacao.MovimentacaoModel;
 import com.valora.api.domain.Movimentacao.TipoMovimentacao;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 
 @Service
@@ -108,25 +112,109 @@ public class MovimentacaoService {
     }
 
 
+    @Transactional
     public MovimentacaoModel atualizarMovimentacao(Long id, @Valid AtualizaMovimentacaoDTO dto, UsuarioModel usuarioLogado) {
-         var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
+        var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Movimentação não encontrada"));
 
-        ContaModel contaNew = null;
-        if(dto.idConta() != null) {
-            contaNew = contaRepository.findByIdAndUsuario(dto.idConta(), usuarioLogado)
-                    .orElseThrow(() -> new RecursoNaoEncontradoException("Conta inexistente"));
-        }
+        // Guardar o estado ANTES da atualização para reverter corretamente
+        BigDecimal valorAntigo = movimentacao.getValor();
+        TipoMovimentacao tipoAntigo = movimentacao.getTipo();
 
-        movimentacao.atualizarInformacoes(dto, contaNew);
+        // 1. REVERTER O SALDO ANTIGO (Estorno)
+        // Desfaz o que a movimentação original tinha feito nos saldos atuais
+        reverterSaldos(movimentacao, valorAntigo, tipoAntigo);
+
+        // 2. BUSCAR NOVAS ENTIDADES (Se o DTO enviou novos IDs, busca no banco. Se não, mantém os atuais)
+        ContaModel contaOrigem = dto.idConta() != null
+                ? contaRepository.findByIdAndUsuario(dto.idConta(), usuarioLogado)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Conta origem inexistente"))
+                : movimentacao.getContaOrigem();
+
+        ContaModel contaDestino = dto.idContaDestino() != null
+                ? contaRepository.findByIdAndUsuario(dto.idContaDestino(), usuarioLogado)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Conta destino inexistente"))
+                : movimentacao.getContaDestino();
+
+        CaixinhaModel caixinha = dto.idCaixinha() != null
+                ? caixinhaRepository.findByIdAndUsuario(dto.idCaixinha(), usuarioLogado)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Caixinha inexistente"))
+                : movimentacao.getCaixinha();
+
+        // 3. ATUALIZAR OS DADOS NA MODEL
+        movimentacao.atualizarInformacoes(dto, contaOrigem, contaDestino, caixinha);
+
+        // 4. APLICAR O NOVO SALDO
+        // Executa a regra financeira com os dados já atualizados
+        aplicarSaldos(movimentacao);
 
         return movimentacao;
     }
 
+    @Transactional
     public void desativarMovimentacao(Long id, UsuarioModel usuarioLogado) {
         var movimentacao = movimentacaoRepository.findByIdAndUsuario(id, usuarioLogado)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Movimentação não encontrada"));
 
+        // 1. Desfaz o impacto financeiro nas contas e caixinhas (Estorno)
+        reverterSaldos(movimentacao, movimentacao.getValor(), movimentacao.getTipo());
+
+        // 2. Marca a movimentação como inativa (Soft Delete)
         movimentacao.desativar();
+    }
+
+
+    private void reverterSaldos(MovimentacaoModel m, BigDecimal valorAntigo, TipoMovimentacao tipoAntigo) {
+        // Usa o tipoAntigo no switch e o valorAntigo nos débitos/créditos
+        switch (tipoAntigo) {
+            case DESPESA -> {
+                if (m.getContaOrigem() != null) m.getContaOrigem().creditar(valorAntigo);
+                else m.getCaixinha().creditar(valorAntigo);
+            }
+            case RECEITA -> {
+                if (m.getContaOrigem() != null) m.getContaOrigem().debitar(valorAntigo);
+                else m.getCaixinha().debitar(valorAntigo);
+            }
+            case CAIXINHA_GUARDAR -> {
+                m.getContaOrigem().creditar(valorAntigo);
+                m.getCaixinha().debitar(valorAntigo);
+            }
+            case CAIXINHA_RESGATE -> {
+                m.getCaixinha().creditar(valorAntigo);
+                m.getContaOrigem().debitar(valorAntigo);
+            }
+            case TRANSFERENCIA_ENTRE_CONTAS -> {
+                m.getContaOrigem().creditar(valorAntigo);
+                m.getContaDestino().debitar(valorAntigo);
+            }
+        }
+    }
+
+    private void aplicarSaldos(MovimentacaoModel m) {
+        switch (m.getTipo()) {
+            case DESPESA -> {
+                if (m.getContaOrigem() != null) m.getContaOrigem().debitar(m.getValor());
+                else m.getCaixinha().debitar(m.getValor());
+            }
+            case RECEITA -> {
+                if (m.getContaOrigem() != null) m.getContaOrigem().creditar(m.getValor());
+                else m.getCaixinha().creditar(m.getValor());
+            }
+            case CAIXINHA_GUARDAR -> {
+                if (m.getContaOrigem() == null || m.getCaixinha() == null) throw new ValidacaoException("Faltam contas para guardar.");
+                m.getContaOrigem().debitar(m.getValor());
+                m.getCaixinha().creditar(m.getValor());
+            }
+            case CAIXINHA_RESGATE -> {
+                if (m.getContaOrigem() == null || m.getCaixinha() == null) throw new ValidacaoException("Faltam contas para resgate.");
+                m.getCaixinha().debitar(m.getValor());
+                m.getContaOrigem().creditar(m.getValor());
+            }
+            case TRANSFERENCIA_ENTRE_CONTAS -> {
+                if (m.getContaOrigem() == null || m.getContaDestino() == null) throw new ValidacaoException("Faltam contas para transferência.");
+                m.getContaOrigem().debitar(m.getValor());
+                m.getContaDestino().creditar(m.getValor());
+            }
+        }
     }
 }

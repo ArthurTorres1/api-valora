@@ -1,13 +1,11 @@
 package com.valora.api.controller;
 
-import com.valora.api.domain.Conta.ContaModel;
 import com.valora.api.domain.Movimentacao.*;
 import com.valora.api.domain.Movimentacao.dto.AtualizaMovimentacaoDTO;
 import com.valora.api.domain.Movimentacao.dto.CadastroMovimentacaoDTO;
 import com.valora.api.domain.Movimentacao.dto.DadosListagemMovimentacaoDTO;
 import com.valora.api.domain.Movimentacao.dto.MovimentacaoDetalhadaDTO;
 import com.valora.api.domain.Usuario.UsuarioModel;
-import com.valora.api.infra.exception.RecursoNaoEncontradoException;
 import com.valora.api.repository.*;
 import com.valora.api.service.MovimentacaoService;
 import jakarta.validation.Valid;
@@ -15,12 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
