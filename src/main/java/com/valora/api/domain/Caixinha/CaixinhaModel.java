@@ -67,7 +67,7 @@ public class CaixinhaModel {
     }
 
     public void debitar(BigDecimal valor) {
-        if (this.vlAtual.compareTo(valor) > 0) {
+        if (this.vlAtual.compareTo(valor) < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo insuficiente na caixinha");
         }
 
