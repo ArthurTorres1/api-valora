@@ -41,8 +41,8 @@ usuarioRepository.findById(dto.idUsuario())
         return caixinhaRepository.findAll();
     }
 
-    public List<CaixinhaModel> listarPorUsuario(Long usuarioId) {
-        return caixinhaRepository.findByUsuarioId(usuarioId);
+    public List<CaixinhaModel> listarPorUsuario(UsuarioModel usuario) {
+        return caixinhaRepository.findAllByUsuarioAndAtivoTrue(usuario);
     }
 
     public CaixinhaModel buscarPorId(Long id) {

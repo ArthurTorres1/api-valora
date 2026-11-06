@@ -30,10 +30,10 @@ public class CaixinhaController {
         return service.listarTodas();
     }
 
-    @GetMapping("/usuario/{usuarioId}")
+    @GetMapping("/usuario/")
     @ResponseStatus(HttpStatus.OK)
-    public List<CaixinhaModel> listarPorUsuario(@PathVariable Long usuarioId) {
-        return service.listarPorUsuario(usuarioId);
+    public List<CaixinhaModel> listarPorUsuario(@AuthenticationPrincipal UsuarioModel usuario) {
+        return service.listarPorUsuario(usuario);
     }
 
     @GetMapping("/{id}")
