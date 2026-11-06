@@ -13,4 +13,6 @@ public interface CaixinhaRepository extends JpaRepository<CaixinhaModel, Long> {
     List<CaixinhaModel> findByUsuarioId(Long usuarioId);
 
     Optional<CaixinhaModel> findByIdAndUsuario(Long aLong, UsuarioModel usuarioLogado);
+
+    List<CaixinhaModel> findAllByUsuarioAndAtivoTrue(UsuarioModel usuario);
 }

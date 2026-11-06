@@ -33,6 +33,13 @@ public class CaixinhaModel {
     @Column(name = "DT_CRIACAO", nullable = false)
     private LocalDate dtCriacao = LocalDate.now();
 
+    @Column(name = "FL_ATIVO")
+    private Boolean ativo = true;
+
+    public void desativar() {
+        this.ativo = false;
+    }
+
     public CaixinhaModel() {}
 
     public CaixinhaModel(Long idCaixinha, UsuarioModel usuario, String nmCaixinha, BigDecimal vlMeta, BigDecimal vlAtual, LocalDate dtCriacao) {

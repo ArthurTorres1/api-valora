@@ -3,10 +3,12 @@ package com.valora.api.service;
 import com.valora.api.domain.Caixinha.dto.CaixinhaDTO;
 import com.valora.api.domain.Caixinha.CaixinhaModel;
 import com.valora.api.domain.Usuario.UsuarioModel;
+import com.valora.api.infra.exception.RecursoNaoEncontradoException;
 import com.valora.api.repository.CaixinhaRepository;
 import com.valora.api.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,8 +58,11 @@ usuarioRepository.findById(dto.idUsuario())
         return caixinhaRepository.save(caixinhaExistente);
     }
 
-    public void excluir(Long id) {
-        CaixinhaModel caixinha = buscarPorId(id);
-        caixinhaRepository.delete(caixinha);
+    @Transactional
+    public void excluir(Long id, UsuarioModel usuarioLogado) {
+        var caixinha = caixinhaRepository.findByIdAndUsuario(id, usuarioLogado)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Caixinha não encontrada"));
+
+        caixinha.desativar();
     }
 }

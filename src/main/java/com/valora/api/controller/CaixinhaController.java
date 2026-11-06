@@ -2,9 +2,11 @@ package com.valora.api.controller;
 
 import com.valora.api.domain.Caixinha.dto.CaixinhaDTO;
 import com.valora.api.domain.Caixinha.CaixinhaModel;
+import com.valora.api.domain.Usuario.UsuarioModel;
 import com.valora.api.service.CaixinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,7 +50,7 @@ public class CaixinhaController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id) {
-        service.excluir(id);
+    public void excluir(@PathVariable Long id, @AuthenticationPrincipal UsuarioModel  usuarioLogado) {
+        service.excluir(id, usuarioLogado);
     }
 }
